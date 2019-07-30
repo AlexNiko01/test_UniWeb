@@ -1,5 +1,38 @@
 <?php
 
+function sortArray($dataArr)
+{
+    $sortedArr = [];
+    foreach ($dataArr as $arr) {
+        if (!($indent = $arr['ident'] ?? null)) {
+            continue;
+        };
+        unset($arr['ident']);
+        $sortedArr[$indent] = $arr;
+    }
+    return $sortedArr;
+}
+
+function sortQueryData($queryData, $dbSample)
+{
+    $sortedQueryData = [];
+    foreach ($dbSample as $key => $val) {
+        if (!isset($queryData[$key])) {
+            $sortedQueryData['new'][] = [$key => $val];
+            continue;
+        }
+        if (!$queryData[$key]['version']) {
+            continue;
+        }
+        if ($val['version'] > $queryData[$key]['version']) {
+            $sortedQueryData['update'][] = [$key => $val];
+        }
+        unset($queryData[$key]);
+    }
+    $sortedQueryData['delete'][] = array_keys($queryData);
+    return $sortedQueryData;
+}
+
 $dbSample = [
     [
         'ident' => 'ident4',
@@ -56,41 +89,8 @@ $queryData = [
     ]
 ];
 
-function sortArray($dataArr)
-{
-    $sortedArr = [];
-    foreach ($dataArr as $arr) {
-        if (!($indent = $arr['ident'] ?? null)) {
-            continue;
-        };
-        unset($arr['ident']);
-        $sortedArr[$indent] = $arr;
-    }
-    return $sortedArr;
-}
-
 $queryData = sortArray($queryData);
 $dbSample = sortArray($dbSample);
-
-function sortQueryData($queryData, $dbSample)
-{
-    $sortedQueryData = [];
-    foreach ($dbSample as $key => $val) {
-        if (!isset($queryData[$key])) {
-            $sortedQueryData['new'][] = [$key => $val];
-            continue;
-        }
-        if (!$queryData[$key]['version']) {
-            continue;
-        }
-        if ($val['version'] > $queryData[$key]['version']) {
-            $sortedQueryData['update'][] = [$key => $val];
-        }
-        unset($queryData[$key]);
-    }
-    $sortedQueryData['delete'][] = array_keys($queryData);
-    return $sortedQueryData;
-}
 
 print_r(sortQueryData($queryData, $dbSample));
 
