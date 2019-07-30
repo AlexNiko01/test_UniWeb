@@ -60,7 +60,9 @@ function sortArray($dataArr)
 {
     $sortedArr = [];
     foreach ($dataArr as $arr) {
-        $indent = $arr['ident'];
+        if(!($indent = $arr['ident'] ?? null)){
+            continue;
+        };
         unset($arr['ident']);
         $sortedArr[$indent] = $arr;
     }
