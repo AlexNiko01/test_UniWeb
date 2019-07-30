@@ -60,7 +60,7 @@ function sortArray($dataArr)
 {
     $sortedArr = [];
     foreach ($dataArr as $arr) {
-        if(!($indent = $arr['ident'] ?? null)){
+        if (!($indent = $arr['ident'] ?? null)) {
             continue;
         };
         unset($arr['ident']);
@@ -78,23 +78,17 @@ function sortQueryData($queryData, $dbSample)
     foreach ($dbSample as $key => $val) {
         if (!isset($queryData[$key])) {
             $sortedQueryData['new'][] = [$key => $val];
-            unset($queryData[$key]);
+            continue;
+        }
+        if (!$queryData[$key]['version']) {
             continue;
         }
         if ($val['version'] > $queryData[$key]['version']) {
             $sortedQueryData['update'][] = [$key => $val];
-            unset($queryData[$key]);
         }
+        unset($queryData[$key]);
     }
-    if (!empty($queryData)) {
-        foreach ($queryData as $ident => $data) {
-            if (isset($dbSample[$ident]) && ($data['version'] <= $dbSample[$ident]['version'])) {
-                continue;
-            }
-            $sortedQueryData['delete'][] = $ident;
-        }
-
-    }
+    $sortedQueryData['delete'][] = array_keys($queryData);
     return $sortedQueryData;
 }
 
