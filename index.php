@@ -21,7 +21,7 @@ function sortQueryData($queryData, $dbSample)
             $sortedQueryData['new'][] = [$key => $val];
             continue;
         }
-        if (!$queryData[$key]['version']) {
+        if (!isset($queryData[$key]['version'])) {
             continue;
         }
         if ($val['version'] > $queryData[$key]['version']) {
