@@ -30,7 +30,7 @@ function sortQueryData($queryData, $dbSample)
         unset($queryData[$key]);
     }
     $sortedQueryData['delete'][] = array_keys($queryData);
-    return $sortedQueryData;
+    return serialize($sortedQueryData);
 }
 
 $dbSample = [
